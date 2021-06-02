@@ -64,6 +64,6 @@ iosa.on('connection', function(socket) {
 });
 iosa.emit('stats', { data: 'some data' });
 
-server.listen(port, () => {
+server.listen(process.env.PORT || port, () => {
     console.log('listening on http://localhost:' + port);
 });
