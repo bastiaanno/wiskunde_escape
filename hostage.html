@@ -10,119 +10,46 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="hostage.js"></script>
+    <script src="timer.js"></script>
 </head>
 
 <body>
+    <div id="progress">
+        <div id="progress_bar"></div>
+    </div>
     <div class='page'>
         <div class="vragen_feed">
-            <h2 class="title">Vragen</h2>
-            <p>Hier komt de vraag...</p>
+            <div class="title_bar">
+                <h2 class="title">Vragen</h2>
+            </div>
+            <div class="question">
+                <p>Hier komt de vraag...</p>
+            </div>
         </div>
-        <div class="placeholder">
-            <h2 class="title">Media</h2>
-            [placeholder]</div>
+        <div class="chat_section">
+            <div class="title_bar">
+                <h2 class="title">Chat</h2>
+            </div>
+            <ul id="messages"></ul>
+            <form id="form" action="">
+                <input id="input" autocomplete="off" /><button id="submitmsg">Verstuur</button>
+            </form>
+        </div>
         <div class="enter_input">
-            <h2 class="title">Versturen</h2>
-            Input
+            <div class="title_bar">
+                <h2 class="title">Antwoord Versturen</h2>
+            </div>
+            <form style="display: none;" name="answer" action="">
+                <input name="answer" class="answer_field" type="hidden" class="answer">
+                <button type="submit" disabled="true" class="submit_answer" name="submit">Verstuur</button>
+            </form>
         </div>
         <div class="timer">
-            <h2 class="title">Timer</h2>
-            00:00
+            <div class="title_bar">
+                <h2 class="title">Timer</h2>
+            </div>
+            <div class="timer_cd"></div>
         </div>
-    </div>
-
-    <div class="wrap">
-        <svg class="svg" width="600px" height="100px">
-      <defs>
-        <marker id="arrow" markerWidth="10" markerHeight="10" refX="0" refY="3" orient="auto" markerUnits="strokeWidth">
-          <path d="M0,0 L0,6 L9,3 z" />
-        </marker>
-      </defs>
-    
-      <line x1="50" y1="50" x2="250" y2="50" stroke="#000" stroke-width="5" marker-end="url(#arrow)" />
-    </svg>
-        <svg class="svg" width="600px" height="100px">
-      <defs>
-        <marker id="arrow" markerWidth="10" markerHeight="10" refX="0" refY="3" orient="auto" markerUnits="strokeWidth">
-          <path d="M0,0 L0,6 L9,3 z" />
-        </marker>
-      </defs>
-    
-      <line x1="295" y1="50" x2="95" y2="75" stroke="#000" stroke-width="5" marker-end="url(#arrow)" />
-    </svg>
-        <svg class="svg" width="600px" height="100px">
-      <defs>
-        <marker id="arrow" markerWidth="10" markerHeight="10" refX="0" refY="3" orient="auto" markerUnits="strokeWidth" viewBox="0 0 20 20">
-          <path d="M0,0 L0,6 L9,3 z" />
-        </marker>
-      </defs>
-    
-      <line x1="50" y1="50" x2="250" y2="50" stroke="#000" stroke-width="5" marker-end="url(#arrow)" />
-    </svg>
-
-        <svg class="svg" width="600px" height="100px">
-      <defs>
-        <marker id="arrow" markerWidth="10" markerHeight="10" refX="0" refY="3" orient="auto" markerUnits="strokeWidth">
-          <path d="M0,0 L0,6 L9,3 z" />
-        </marker>
-      </defs>
-    
-      <line x1="295" y1="50" x2="95" y2="75" stroke="#000" stroke-width="5" marker-end="url(#arrow)" />
-    </svg>
-        <svg class="svg" width="600px" height="100px">
-      <defs>
-        <marker id="arrow" markerWidth="10" markerHeight="10" refX="0" refY="3" orient="auto" markerUnits="strokeWidth" viewBox="0 0 20 20">
-          <path d="M0,0 L0,6 L9,3 z" />
-        </marker>
-      </defs>
-    
-      <line x1="50" y1="50" x2="250" y2="50" stroke="#000" stroke-width="5" marker-end="url(#arrow)" />
-    </svg>
-        <svg class="svg" width="600px" height="100px">
-      <defs>
-        <marker id="arrow" markerWidth="10" markerHeight="10" refX="0" refY="3" orient="auto" markerUnits="strokeWidth">
-          <path d="M0,0 L0,6 L9,3 z" />
-        </marker>
-      </defs>
-    
-      <line x1="50" y1="50" x2="250" y2="50" stroke="#000" stroke-width="5" marker-end="url(#arrow)" />
-    </svg>
-        <svg class="svg" width="600px" height="100px">
-      <defs>
-        <marker id="arrow" markerWidth="10" markerHeight="10" refX="0" refY="3" orient="auto" markerUnits="strokeWidth">
-          <path d="M0,0 L0,6 L9,3 z" />
-        </marker>
-      </defs>
-    
-      <line x1="295" y1="50" x2="95" y2="75" stroke="#000" stroke-width="5" marker-end="url(#arrow)" />
-    </svg>
-        <svg class="svg" width="600px" height="100px">
-      <defs>
-        <marker id="arrow" markerWidth="10" markerHeight="10" refX="0" refY="3" orient="auto" markerUnits="strokeWidth">
-          <path d="M0,0 L0,6 L9,3 z" />
-        </marker>
-      </defs>
-    
-      <line x1="50" y1="50" x2="250" y2="50" stroke="#000" stroke-width="5" marker-end="url(#arrow)" />
-    </svg>
-        <svg class="svg" width="600px" height="100px">
-      <defs>
-        <marker id="arrow" markerWidth="10" markerHeight="10" refX="0" refY="3" orient="auto" markerUnits="strokeWidth">
-          <path d="M0,0 L0,6 L9,3 z" />
-        </marker>
-      </defs>
-    
-      <line x1="295" y1="50" x2="95" y2="75" stroke="#000" stroke-width="5" marker-end="url(#arrow)" />
-    </svg>
-        <svg class="svg" width="600px" height="100px">
-      <defs>
-        <marker id="arrow" markerWidth="10" markerHeight="10" refX="0" refY="3" orient="auto" markerUnits="strokeWidth" viewBox="0 0 20 20">
-          <path d="M0,0 L0,6 L9,3 z" />
-        </marker>
-      </defs>
-    
-      <line x1="50" y1="50" x2="250" y2="50" stroke="#000" stroke-width="5" marker-end="url(#arrow)" />
-    </svg>
     </div>
 </body>
 
