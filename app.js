@@ -1,13 +1,69 @@
 const fs = require('fs');
 const express = require('express');
 const app = express();
-const http = require('http');
-const server = http.Server(app);
+const http = require('https');
+const server = http.createServer({
+        key: fs.readFileSync('./localhost.pem'),
+        cert: fs.readFileSync('./localhost.crt'),
+        ca: fs.readFileSync('./localhost-chain.pem')
+    },
+    app);
 const { Server } = require("socket.io");
 const io = new Server(server);
-const port = 3000;
+const port = process.env.PORT || 3000;
 const passwords = JSON.parse(fs.readFileSync("passwords.json", 'utf-8'));
-
+const questions = JSON.parse(fs.readFileSync("questions.json", 'utf-8'));
+var current_question;
+var current_question_num = 0;
+var next_question;
+var points_received = 0;
+var max_points = 0;
+questions.questions.forEach(question => {
+    let questionPoints = question.points_reward;
+    max_points += questionPoints;
+});
+console.log("Total points: " + max_points);
+var turf = require('@turf/turf');
+// And then use it
+var features = [{
+    coordinates: [
+        [
+            [
+                6.2242377,
+                52.1354242
+            ],
+            [
+                6.2242538,
+                52.1349566
+            ],
+            [
+                6.2245864,
+                52.1349566
+            ],
+            [
+                6.2252355,
+                52.1349303
+            ],
+            [
+                6.2251979,
+                52.1350949
+            ],
+            [
+                6.2249458,
+                52.1354275
+            ],
+            [
+                6.2244898,
+                52.1354472
+            ],
+            [
+                6.2242377,
+                52.1354242
+            ]
+        ]
+    ],
+    name: "isendoorn"
+}]
 const isValidJwt = (header) => {
     const token = header.split(' ')[1];
     if (token === 'abc') {
@@ -20,9 +76,15 @@ const isValidJwt = (header) => {
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
 });
-app.get('/hostage', (req, res) => {
-    res.sendFile(__dirname + '/hostage.html');
+app.get('/:type', (req, res) => {
+    let type = req.params.type;
+    if (!type.includes(".")) res.sendFile(__dirname + '/' + type + '.html');
+    else res.sendFile(__dirname + '/public/' + type);
 });
+app.post('/hostage', function(req, res) {
+    res.sendFile(__dirname + '/hostage.html');
+})
+
 app.use(express.static(__dirname + '/public'));
 
 io.use((socket, next) => {
@@ -33,6 +95,8 @@ io.use((socket, next) => {
     }
     return next(new Error('authentication error'));
 });
+var hostage = io.of('/hostage');
+var supervisor = io.of('/super');
 io.on('connection', (socket) => {
     socket.on('entry_button', (type) => {
         if (type != 'hostage') {
@@ -51,18 +115,109 @@ io.on('connection', (socket) => {
             return;
         }
         if (pass == passwords[type]) {
-            socket.emit('alert', 'Het wachtwoord is juist!');
+            socket.emit('redirect', '/' + type);
         } else {
             socket.emit('alert', 'Het wachtwoord is incorrect.');
         }
     });
+    // start listening for coords
+    socket.on('send:coords', function(data) {
+        var point = turf.point([data.coords[0].lng, data.coords[0].lat]);
+        var checkPos = turf.inside(point, smidse);
+        if (checkPos) {
+            console.log("YES, ", data.id, "is inside polygon.");
+            supervisor.emit("polygon update", data.id, )
+        } else {
+            console.log("NO, ", data.id, "is outside polygon.");
+        }
+        // broadcast your coordinates to everyone except you
+        socket.broadcast.emit('load:coords', data);
+    });
     console.log('a user connected');
 });
-var iosa = io.of('/hostage');
-iosa.on('connection', function(socket) {
+hostage.on('connection', function(socket) {
+    socket.on('answer', function(formData) {
+        console.log(formData);
+    });
     console.log('A user connected to Hostage namespace');
+    if (current_question != undefined) hostage.emit('new question', current_question.question, current_question.type);
 });
-iosa.emit('stats', { data: 'some data' });
+var chat = io.of('/chat');
+chat.on('connection', (socket) => {
+    socket.on('chat message', (msg, sender, timestamp) => {
+        chat.emit('chat message', msg, sender, timestamp);
+    });
+});
+supervisor.on('connection', function(socket) {
+    next_question = questions.questions[current_question_num];
+    socket.emit("next question", next_question.question);
+    socket.on("send new question", () => {
+        current_question = questions.questions[current_question_num];
+        hostage.emit("new question", current_question.question);
+        console.log("Sending new question:\n" + current_question.question);
+        console.log("with correct answer(s):");
+        current_question.possibleAnswers.forEach(possibleAnswer => {
+            console.log(possibleAnswer);
+        });
+        console.log("The question is worth " + current_question.points_reward + " point(s)!")
+    });
+    var timerInterval;
+    socket.on('start timer', (duration, warn, alert) => {
+        io.emit('start timer', duration, warn, alert);
+        supervisor.emit('start timer', duration, warn, alert);
+        console.log("starting timer");
+        var WARNING_THRESHOLD = warn;
+        var ALERT_THRESHOLD = alert;
+        var COLOR_CODES = {
+            info: {
+                color: "green"
+            },
+            warning: {
+                color: "orange",
+                threshold: WARNING_THRESHOLD
+            },
+            alert: {
+                color: "red",
+                threshold: ALERT_THRESHOLD
+            }
+        };
+        var TIME_LIMIT = duration;
+        var timePassed = 0;
+        timerInterval = setInterval(() => {
+            timePassed = timePassed += 1;
+            if (timePassed > TIME_LIMIT) return;
+            hostage.emit("update timer", COLOR_CODES, TIME_LIMIT, timePassed, WARNING_THRESHOLD, ALERT_THRESHOLD);
+            supervisor.emit("update timer", COLOR_CODES, TIME_LIMIT, timePassed, WARNING_THRESHOLD, ALERT_THRESHOLD);
+        }, 1000);
+    });
+    socket.on('send:coords', function(data) {
+        var point = turf.point([data.coords[0].lng, data.coords[0].lat]);
+        //var checkPos = turf.inside(point, smidse);
+        var isInPolygon = false;
+        features.forEach(featureFromArray => {
+            var usablePolygon = turf.polygon(featureFromArray.coordinates, { name: featureFromArray.name });
+            var checkPos = turf.inside(point, usablePolygon);
+            if (checkPos) {
+                isInPolygon = true;
+                console.log("YES, ", data.id, "is in de polygon ", featureFromArray.name);
+                supervisor.emit("polygon update", "in", data.id, featureFromArray.name);
+            }
+        });
+        if (!isInPolygon) {
+            console.log("NO, ", data.id, "is outside any polygon");
+            supervisor.emit("polygon update", "out", data.id);
+        }
+        // broadcast your coordinates to everyone except you
+        socket.broadcast.emit('load:coords', data, "");
+    });
+
+    function stopTimer() {
+        clearInterval(timerInterval);
+    }
+    socket.on("stop timer", function() {
+        stopTimer();
+    })
+});
 
 server.listen(process.env.PORT || port, () => {
     console.log('listening on http://localhost:' + port);
