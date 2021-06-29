@@ -1,0 +1,11 @@
+{
+    "questions": [{
+        "type": "number",
+        "question": "Wat is 1+1?",
+        "answerPrefix": "",
+        "possibleAnswers": [
+            "1"
+        ],
+        "points_reward": 1
+    }]
+}
