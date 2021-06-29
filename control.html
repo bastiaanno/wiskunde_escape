@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Wiskunde Escape</title>
+    <link rel="stylesheet" href="control.css">
+    <link rel="stylesheet" href="map.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin="" />
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.3.0/mapbox-gl.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class='page'>
+        <div class="vragen_feed">
+            <div class="title_bar">
+                <h2 class="title">Vragen</h2>
+            </div>
+            <div class="question">
+                <p>Hier komt de vraag...</p>
+            </div>
+        </div>s
+        <div class="location">
+            <div class="wrapper">
+                <div class="app">
+                    <div id="infobox" class="infobox"></div>
+                    <div id="map">To get this app to work you need to share your geolocation.</div>
+                </div>
+            </div>
+            <div class="location_info"></div>
+        </div>
+        <div class="chat_section">
+            <div class="title_bar">
+                <h2 class="title">Chat</h2>
+            </div>
+            <ul id="messages"></ul>
+            <form id="form" action="">
+                <input id="input" autocomplete="off" /><button id="submitmsg">Verstuur</button>
+            </form>
+        </div>
+        <div class="timer">
+            <div class="title_bar">
+                <h2 class="title">Timer</h2>
+            </div>
+            <div class="timer_cd"></div>
+        </div>
+    </div>
+</body>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.3.0/mapbox-gl.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="control.js"></script>
+<script src="timer.js"></script>
+<script src="map.js"></script>
+
+</html>
