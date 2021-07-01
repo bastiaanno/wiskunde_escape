@@ -133,9 +133,10 @@ function positionSuccess(position) {
     }).addTo(map);
     // set map bounds
     //map.fitWorld();
-    userMarker.addTo(map);
-    userMarker.bindPopup("Jij bent hier! Jouw ID is " + userId + "").openPopup();
-
+    if (!disable_marker) {
+        userMarker.addTo(map);
+        userMarker.bindPopup("Jij bent hier! Jouw ID is " + userId + "").openPopup();
+    }
     // send coords on when user is active
     /*setInterval(function() {
         active = true;
