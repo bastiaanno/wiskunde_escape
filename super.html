@@ -20,6 +20,7 @@
             </div>
             <div class="questions">
                 <p>Hier komt de vraag...</p>
+
             </div>
             <button class="send_question">Verstuur vraag</button>
         </div>
@@ -32,20 +33,28 @@
             </div>
             <div class="location_info"></div>
         </div>
-        <div class="enter_input">
+        <div class="incoming_answers">
             <div class="title_bar">
                 <h2 class="title">Antwoorden</h2>
             </div>
             Hier komen de binnengekomen Antwoorden...
+        </div>
+        <div class="chat_section">
+            <div class="title_bar">
+                <h2 class="title">Chat</h2>
+            </div>
+            <ul id="messages"></ul>
+            <form id="form" action="">
+                <input id="input" autocomplete="off" /><button id="submitmsg">Verstuur</button>
+            </form>
         </div>
         <div class="timer">
             <div class="title_bar">
                 <h2 class="title">Timer</h2>
             </div>
             <div class="timer_cd"></div>
-            <input class="timer_duration" name="timer_duration" type="number" value="1800"><br>
-            <input class="timer_warn" name="timer_warn" type="number" value="1200"><br>
-            <input class="timer_alert" name="timer_alert" type="number" value="600"><br>
+            Totale tijd: <input class="timer_duration" name="timer_duration" type="number" value="30"> minuten<br> Waarschuwingstijd: <input class="timer_warn" name="timer_warn" type="number" value="20"> minuten<br> Gevarentijd: <input class="timer_alert"
+                name="timer_alert" type="number" value="10"> minuten<br>
             <button class="timer_start">START TIMER</button>
             <button class="timer_stop">STOP TIMER</button>
         </div>
