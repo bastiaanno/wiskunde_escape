@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.4] - 01/07/21
+### Added
+- Mobile instance
+- - TODO
+- Chat in "super" instance
+
+### Changed
+- Translate app.js
+- Change "super" interface
+- - Improve styling
+- - Change layout
+
+### Removed
+- Progress bar from hostage instance
+
+### New Tasks (TODO)
+- Completely remove traces of "points" functionality
+
 ## [0.0.3] - 29/06/21
 ### Added
 - Control page, for the control room.
