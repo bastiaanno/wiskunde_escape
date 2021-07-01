@@ -215,20 +215,3 @@ form>button:hover {
 #messages>li:nth-child(odd) {
     background: #efefef;
 }
-
-#progress {
-    height: 2%;
-    border: none;
-    border-width: 0;
-    width: 100%;
-    max-width: 100%;
-    background-color: grey;
-    margin: 0;
-    padding: 0;
-}
-
-#progress_bar {
-    width: 0%;
-    height: 2%;
-    background-color: #4CAF50;
-}
