@@ -2,12 +2,8 @@ const fs = require('fs');
 const express = require('express');
 const app = express();
 //ONLY FOR LOCAL TESTING
-const http = require('https');
-const server = http.createServer({
-        key: fs.readFileSync('./localhost.pem'),
-        cert: fs.readFileSync('./localhost.crt'),
-        ca: fs.readFileSync('./localhost-chain.pem')
-    },
+const http = require('http');
+const server = http.createServer(
     app);
 const { Server } = require("socket.io");
 const io = new Server(server);
@@ -16,14 +12,8 @@ const passwords = JSON.parse(fs.readFileSync("passwords.json", 'utf-8'));
 const questions = JSON.parse(fs.readFileSync("questions.json", 'utf-8'));
 var current_question;
 var current_question_num = 0;
+var current_possible_answers = [];
 var next_question;
-var points_received = 0;
-var max_points = 0;
-questions.questions.forEach(question => {
-    let questionPoints = question.points_reward;
-    max_points += questionPoints;
-});
-console.log("Totaal aantal punten: " + max_points);
 var turf = require('@turf/turf');
 // And then use it
 var features = [{
@@ -126,10 +116,11 @@ io.on('connection', (socket) => {
         var point = turf.point([data.coords[0].lng, data.coords[0].lat]);
         var checkPos = turf.inside(point, smidse);
         if (checkPos) {
-            console.log("JA, ", data.id, "is in een polygon.");
-            supervisor.emit("polygon update", data.id, )
+            //console.log("JA, ", data.id, "is in een polygon.");
+            supervisor.emit("polygon update", "out", data.id)
         } else {
-            console.log("NEE, ", data.id, "is buiten polygon.");
+            //console.log("NEE, ", data.id, "is buiten polygon.");
+            supervisor.emit("polygon update", "in", data.id)
         }
         // broadcast your coordinates to everyone except you
         socket.broadcast.emit('load:coords', data);
@@ -138,9 +129,13 @@ io.on('connection', (socket) => {
 });
 hostage.on('connection', function(socket) {
     socket.on('answer', function(formData) {
-        console.log(formData);
+        if (current_possible_answers.length > 0) {
+            if (current_possible_answers.includes(formData[0].value)) {
+                console.log(formData[0].value + " is correct!");
+            }
+        }
     });
-    console.log('Iemand is verbonden in de geizelaar namespace.');
+    console.log('Iemand is verbonden in de gijzelaar namespace.');
     if (current_question != undefined) hostage.emit('new question', current_question.question, current_question.type);
 });
 var chat = io.of('/chat');
@@ -151,16 +146,16 @@ chat.on('connection', (socket) => {
 });
 supervisor.on('connection', function(socket) {
     next_question = questions.questions[current_question_num];
-    socket.emit("next question", next_question.question, next_question.points_reward);
+    socket.emit("next question", next_question.question);
     socket.on("send new question", () => {
         current_question = questions.questions[current_question_num];
         hostage.emit("new question", current_question.question);
         console.log("Nieuwe vraag aan het versturen:\n" + current_question.question);
         console.log("Met correcte antwoord(en):");
+        current_possible_answers = current_question.possibleAnswers;
         current_question.possibleAnswers.forEach(possibleAnswer => {
             console.log(possibleAnswer);
         });
-        console.log("Deze vraag is " + current_question.points_reward + " punt(en) waard!")
     });
     var timerInterval;
     socket.on('start timer', (duration, warn, alert) => {
@@ -200,12 +195,12 @@ supervisor.on('connection', function(socket) {
             var checkPos = turf.inside(point, usablePolygon);
             if (checkPos) {
                 isInPolygon = true;
-                console.log("JA, ", data.id, "is in de polygon ", featureFromArray.name);
+                //console.log("JA, ", data.id, "is in de polygon ", featureFromArray.name);
                 supervisor.emit("polygon update", "in", data.id, featureFromArray.name);
             }
         });
         if (!isInPolygon) {
-            console.log("NEE, ", data.id, "is buiten een polygon");
+            //console.log("NEE, ", data.id, "is buiten een polygon");
             supervisor.emit("polygon update", "out", data.id);
         }
         // broadcast your coordinates to everyone except you
