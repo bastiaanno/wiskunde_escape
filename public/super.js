@@ -42,14 +42,14 @@ $(document).ready(function() {
     socket.on("polygon update", (status, id, name) => {
         if (status == "out") {
             if ($("#" + id).length == 0) {
-                $(".location_info").html("<div id=\"" + id + "\"><p>" + id + " is niet in een polygon.</p></div>");
+                $(".location_info").append("<div id=\"" + id + "\"><p>" + id + " is niet in een polygon.</p></div>");
             } else {
                 $("#" + id).html("<p>" + id + " is niet in een polygon.</p>");
             }
         }
         if (status == "in") {
             if ($("#" + id).length == 0) {
-                $(".location_info").html("<div id=\"" + id + "\"><p>" + id + "is in de polygon \"" + name + "\"!</p></div>");
+                $(".location_info").append("<div id=\"" + id + "\"><p>" + id + "is in de polygon \"" + name + "\"!</p></div>");
             } else {
                 $("#" + id).html("<p>" + id + "is in de polygon \"" + name + "\"!</p>");
             }
