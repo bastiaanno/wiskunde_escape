@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.5] - 04/07/21
+### Added
+- TODO.MD
+
+### Changed
+- Map.js
+- - Geolocation updates
+
+### Removed
+Nothing.
+
+### New Tasks (TODO)
+-  Delete "points functionality"
+- Tie everything together
+
 ## [0.0.4] - 01/07/21
 ### Added
 - Mobile instance
