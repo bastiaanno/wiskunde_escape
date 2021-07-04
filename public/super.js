@@ -32,8 +32,8 @@ $(document).ready(function() {
         window.location.replace(url);
     });
     var firstQuestion = true;
-    socket.on('next question', (question, points) => {
-        $(".questions").html(question + "&nbsp;(" + points + ")");
+    socket.on('next question', (question) => {
+        $(".questions").html(question);
         if (!firstQuestion) {
             $(".send_question").text("Volgende vraag");
             firstQuestion = false;
