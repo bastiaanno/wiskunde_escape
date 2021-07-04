@@ -29,6 +29,7 @@ socket.on("load:coords", function(data) {
     //console.log(connects);
     // remember users id to show marker only once
     if (!(data.id in connects)) {
+        console.log(data.coords[0]);
         setMarker(data);
     }
 
@@ -39,11 +40,13 @@ socket.on("load:coords", function(data) {
 // check whether browser supports geolocation api
 if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(positionSuccess, positionError, { enableHighAccuracy: true });
-    navigator.geolocation.watchPosition(updateLocation, positionError, {
-        emableHighAccuracy: true,
-        timeout: 5000,
-        maximumAge: 0
-    });
+    setInterval(() => {
+        navigator.geolocation.getCurrentPosition(updateLocation, positionError, {
+            emableHighAccuracy: true,
+            maximumAge: 1000,
+            accuracy: 10,
+        });
+    }, 5000);
 } else {
     $(".map").text("Jouw browser ondersteunt geen geolocatie!");
 }
@@ -178,9 +181,10 @@ doc.bind("mouseup mouseleave", function() {
 
 // showing markers for connections
 function setMarker(data) {
+    console.log(data);
     for (i = 0; i < data.coords.length; i++) {
         var marker = L.marker([data.coords[i].lat, data.coords[i].lng], { icon: yellowIcon }).addTo(map);
-        marker.bindPopup("One more external user is here!");
+        marker.bindPopup(data.id + " is hier!");
         markers[data.id] = marker;
     }
 }
