@@ -1,5 +1,6 @@
 var socket = io('/control');
 var chatSocket = io('/chat');
+var disable_marker = true;
 $(document).ready(function() {
     socket.on('alert', (incoming) => {
         alert(incoming);
