@@ -83,6 +83,10 @@ button {
     background-color: #6a6d95;
 }
 
+.answers p {
+    font-size: 2rem;
+}
+
 .chat_section {
     width: 50%;
     height: 40%;

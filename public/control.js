@@ -22,8 +22,9 @@ $(document).ready(function() {
         $('form[name=answer]').show();
         $('#loader').hide();
     });
-    socket.on('new vector', (vector) => {
-        $('vectors').append(vector + '</br>');
+    socket.on('new vector', (vector, prefix) => {
+        console.log("new vector");
+        $('.vectors').append("<p>" + prefix + vector + '</p>');
     });
     $('form[name=answer]').on("submit", function() {
         var formData = $(this).serializeArray();

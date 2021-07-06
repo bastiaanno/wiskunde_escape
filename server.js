@@ -2,8 +2,13 @@ const fs = require('fs');
 const express = require('express');
 const app = express();
 //ONLY FOR LOCAL TESTING
-const http = require('http');
-const server = http.createServer(app);
+const http = require('https');
+const server = http.createServer({
+        key: fs.readFileSync('./localhost.pem'),
+        cert: fs.readFileSync('./localhost.crt'),
+        ca: fs.readFileSync('./localhost-chain.pem')
+    },
+    app);
 const { Server } = require("socket.io");
 const io = new Server(server);
 const port = process.env.PORT || 3000;
@@ -16,6 +21,7 @@ var currentFollowUpTarget;
 var current_question_num = 0;
 var current_possible_answers = [];
 var next_question;
+var questionOpen = false;
 const isValidJwt = (header) => {
     const token = header.split(' ')[1];
     if (token === 'abc') {
@@ -177,30 +183,14 @@ server.listen(process.env.PORT || port, () => {
     console.log('Server luistert op http://localhost:' + port);
 });
 
-function nextQuestion() {
-    current_question_num++;
-    if (questions.questions[current_question_num] != undefined) {
-        current_question = questions.questions[current_question_num];
-        hostage.emit("new question", current_question.question);
-        console.log("Nieuwe vraag aan het versturen:\n" + current_question.question);
-        console.log("Met kentallen:");
-        current_possible_answers = current_question.possibleAnswers;
-        current_possible_answers.forEach(possibleAnswer => {
-            console.log(possibleAnswer);
-        });
-    } else {
-        console.log("Dit was de laatste vraag!");
-        //END QUIZ
-    }
-}
-
 function sendFollowUp() {
+    hostage.emit("alert", "De controlekamer komt je bevrijden, heb geduld!");
     control.emit("new question", "Tel de volgende vectoren bij elkaar op!", "text");
 
 }
 
-function sendVector(vector) {
-    control.emit("new vector", vector);
+function sendVector(vector, prefix) {
+    control.emit("new vector", vector, prefix);
 }
 
 function checkAnswer(formData, instance) {
@@ -217,14 +207,11 @@ function checkAnswer(formData, instance) {
                     if (checkArrays(formElements, possibleAnswer)) {
                         console.log(formElements);
                         console.log("is correct!");
-                        if (current_question.followup.doFollowup) {
-                            sendFollowUp();
-                        } else {
-                            sendVector();
-                            nextQuestion();
-                        }
+                        supervisor.emit("question answered", current_question, formElements);
+                        correctAnswer(formElements);
+                        io.of('/' + instance).emit("alert", "Het antwoord is correct!");
                     } else {
-                        //io.of('/' + instance).emit("alert", "Het antwoord is incorrect!");
+                        io.of('/' + instance).emit("alert", "Het antwoord is incorrect!");
                     }
                     break;
 
@@ -232,21 +219,21 @@ function checkAnswer(formData, instance) {
                     if (checkArrays(formElements, possibleAnswer)) {
                         console.log(formElements);
                         console.log("is correct!");
-                        if (current_question.followup.doFollowup) {
-                            sendFollowUp();
-                        } else {
-                            sendVector();
-                            nextQuestion();
-                        }
+                        correctAnswer(formElements);
+                        io.of('/' + instance).emit("alert", "Het antwoord is correct!");
                     } else {
                         console.log("nee");
-                        //io.of('/' + instance).emit("alert", "Het antwoord is incorrect!");
+                        io.of('/' + instance).emit("alert", "Het antwoord is incorrect!");
                     }
                     break;
 
                 case "number":
                     if (formData[0].value == possibleAnswer) {
                         console.log(formData[0].value + " is correct!");
+                        correctAnswer(formData[0].value);
+                        io.of('/' + instance).emit("alert", "Het antwoord is correct!");
+                    } else {
+                        io.of('/' + instance).emit("alert", "Het antwoord is incorrect!");
                     }
                     break;
             }
@@ -272,4 +259,13 @@ function checkArrays(arrA, arrB) {
 
     return true;
 
+}
+
+function correctAnswer(answer) {
+    if (current_question.followup) {
+        sendVector(answer, current_question.answerPrefix);
+        sendFollowUp();
+    } else {
+        sendVector(answer, current_question.answerPrefix);
+    }
 }

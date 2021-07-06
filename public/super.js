@@ -25,6 +25,9 @@ $(document).ready(function() {
     socket.on("reconnect", () => {
         console.log('reconnected');
     });
+    socket.on("connect", () => {
+        console.log('connected');
+    });
     socket.on('redirect', (url) => {
         console.log(url);
         window.location.replace(url);
@@ -49,21 +52,10 @@ $(document).ready(function() {
             socket.emit("send new question", btnId);
         });
     })
-    socket.on("polygon update", (status, id, name) => {
-        if (status == "out") {
-            if ($("#" + id).length == 0) {
-                $(".location_info").append("<div id=\"" + id + "\"><p>" + id + " is niet in een polygon.</p></div>");
-            } else {
-                $("#" + id).html("<p>" + id + " is niet in een polygon.</p>");
-            }
-        }
-        if (status == "in") {
-            if ($("#" + id).length == 0) {
-                $(".location_info").append("<div id=\"" + id + "\"><p>" + id + "is in de polygon \"" + name + "\"!</p></div>");
-            } else {
-                $("#" + id).html("<p>" + id + "is in de polygon \"" + name + "\"!</p>");
-            }
-        }
+    var firstAnswer = true;
+    socket.on("question answered", (question, formElement) => {
+        if (firstAnswer) $(".answers").html("");
+        $(".answers").append("<p>" + formElement + "</p><br>");
     });
     var messages = document.getElementById('messages');
     var form = document.getElementById('form');

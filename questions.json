@@ -3,41 +3,37 @@
             "num": 1,
             "type": "vector",
             "question": "Wat is vector 1?",
-            "answerPrefix": "",
+            "answerPrefix": "c=",
             "kentallen": [
                 [
                     17,
                     78
                 ]
             ],
-            "followup": {
-                "doFollowup": false
-            }
+            "followup": false
         },
         {
             "num": 2,
             "type": "coordinates",
             "question": "Wat zijn de coordinaten van z?",
-            "answerPrefix": "",
+            "answerPrefix": "z=",
             "coordinates": [
                 [
                     2.1,
                     3.1
                 ]
             ],
-            "followup": {
-                "doFollowup": false
-            }
+            "followup": false
         },
         {
             "num": 3,
             "type": "number",
             "question": "Wat is het inproduct van vraag 3?",
-            "answerPrefix": "",
+            "answerPrefix": "? + ? = ",
             "possibleAnswers": [
                 840.1
             ],
-            "doFollowup": true
+            "followup": true
         }
     ]
 }
