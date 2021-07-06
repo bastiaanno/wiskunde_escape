@@ -106,3 +106,6 @@ dist
 #certificate files
 *.pem
 *.crt
+
+#vscodecounter
+.VSCodeCounter/

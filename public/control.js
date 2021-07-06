@@ -20,6 +20,10 @@ $(document).ready(function() {
         $('.answer_field').prop('type', type);
         $('.submit_answer').prop('disabled', false);
         $('form[name=answer]').show();
+        $('#loader').hide();
+    });
+    socket.on('new vector', (vector) => {
+        $('vectors').append(vector + '</br>');
     });
     $('form[name=answer]').on("submit", function() {
         var formData = $(this).serializeArray();

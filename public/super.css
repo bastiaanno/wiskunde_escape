@@ -51,7 +51,7 @@ button {
 
 .vragen_feed {
     width: 50%;
-    height: 33.333333%;
+    height: 40%;
     position: absolute;
     left: 0px;
     background-color: #6a6d95;
@@ -76,16 +76,16 @@ button {
 
 .incoming_answers {
     width: 50%;
-    height: 33.333333%;
+    height: 20%;
     position: absolute;
     left: 0px;
-    bottom: 33.333333%;
+    bottom: 40%;
     background-color: #6a6d95;
 }
 
 .chat_section {
     width: 50%;
-    height: 33.333333%;
+    height: 40%;
     bottom: 0;
     position: absolute;
     left: 0px;

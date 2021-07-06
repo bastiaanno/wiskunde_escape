@@ -14,14 +14,33 @@ $(document).ready(function() {
         console.log(url);
         window.location.replace(url);
     });
-    socket.on('new question', (question, type) => {
+    socket.on('new question', (question, newType) => {
         $(".question").html(question);
-        $('.answer_field').prop('type', type);
         $('.submit_answer').prop('disabled', false);
         $('form[name=answer]').show();
+        switch (newType) {
+            case "number":
+                $('.answer_field_1').attr('type', "number");
+                $('.answer_field_1').attr('step', "0.1");
+                $('.answer_field_2').hide();
+                break;
+            case "vector":
+                $('.answer_field_1').attr('type', "number");
+                $('.answer_field_2').show();
+                $('.answer_field_2').attr('type', "number");
+            case "coordinates":
+                $('.answer_field_1').attr('type', "number");
+                $('.answer_field_1').attr('step', "0.1");
+                $('.answer_field_2').show();
+                $('.answer_field_2').attr('type', "number");
+                $('.answer_field_2').attr('step', "0.1");
+                break;
+        }
+        $('.answer_field').attr('type', newType);
     });
     $('form[name=answer]').on("submit", function() {
         var formData = $(this).serializeArray();
+        console.log(formData);
         socket.emit("answer", formData);
         return false;
     });

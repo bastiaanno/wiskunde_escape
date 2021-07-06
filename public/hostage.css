@@ -162,17 +162,23 @@ form {
     width: 100%;
 }
 
+form[name="answer"] {
+    display: inline;
+}
+
 form[name=answer] {
     position: absolute;
     top: 50%;
 }
 
 input {
+    display: block;
     border: none;
     padding: 0 1rem;
     flex-grow: 1;
     border-radius: 1rem;
     font-size: 2rem;
+    width: 40%;
 }
 
 @media(pointer: coarse) {

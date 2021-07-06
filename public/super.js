@@ -1,6 +1,7 @@
 var socket = io('/super');
 var chatSocket = io('/chat');
 const disable_marker = true;
+
 $(document).ready(function() {
     $(".timer_start").click(function() {
         var dur = $(".timer_duration").val();
@@ -10,9 +11,6 @@ $(document).ready(function() {
     });
     $(".timer_stop").click(function() {
         socket.emit("stop timer");
-    });
-    $(".send_question").click(function() {
-        socket.emit("send new question");
     });
     socket.on("password", function(type) {
         var password = prompt("wat is het wachtwoord?");
@@ -39,6 +37,18 @@ $(document).ready(function() {
             firstQuestion = false;
         }
     });
+    socket.on("clear questions", () => {
+        $('.questions').html("");
+    });
+    socket.on('list question', (question) => {
+        $(".questions").append("<p>" + question.question + "</p><button class=\"send_question\" id=\"" + question.num + "\">Verstuur vraag</button><br>");
+    });
+    socket.on("start listening", () => {
+        $(".send_question").click(function() {
+            btnId = this.id;
+            socket.emit("send new question", btnId);
+        });
+    })
     socket.on("polygon update", (status, id, name) => {
         if (status == "out") {
             if ($("#" + id).length == 0) {
