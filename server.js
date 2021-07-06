@@ -55,7 +55,7 @@ var logger = io.of('/logger');
 io.on('connection', (socket) => {
     socket.on('entry_button', (type) => {
         if (authenticated) {
-            socket.emit('redirect', '/hostage');
+            socket.emit('redirect', '/' + type);
             console.log('redirecting');
             return;
         }
