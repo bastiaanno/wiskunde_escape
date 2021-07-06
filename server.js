@@ -54,7 +54,7 @@ var control = io.of('/control');
 var logger = io.of('/logger');
 io.on('connection', (socket) => {
     socket.on('entry_button', (type) => {
-        if (authenticated) {
+        if (authenticated && type != "super") {
             socket.emit('redirect', '/' + type);
             console.log('redirecting');
             return;
