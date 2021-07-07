@@ -162,6 +162,7 @@ supervisor.on('connection', function(socket) {
             if (timePassed > TIME_LIMIT) return;
             hostage.emit("update timer", COLOR_CODES, TIME_LIMIT, timePassed, WARNING_THRESHOLD, ALERT_THRESHOLD);
             supervisor.emit("update timer", COLOR_CODES, TIME_LIMIT, timePassed, WARNING_THRESHOLD, ALERT_THRESHOLD);
+            control.emit("update timer", COLOR_CODES, TIME_LIMIT, timePassed, WARNING_THRESHOLD, ALERT_THRESHOLD);
         }, 1000);
     });
 

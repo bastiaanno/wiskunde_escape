@@ -29,7 +29,7 @@
             "num": 3,
             "type": "number",
             "question": "Wat is het inproduct van vraag 3?",
-            "answerPrefix": "? + ? = ",
+            "answerPrefix": "f = ",
             "possibleAnswers": [
                 840.1
             ],
