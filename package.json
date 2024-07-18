@@ -11,7 +11,7 @@
     "license": "GPL-3.0",
     "dependencies": {
         "@turf/turf": "^6.4.0",
-        "express": "^4.17.1",
+        "express": "^4.19.2",
         "fs": "^0.0.1-security",
         "http": "^0.0.1-security",
         "jsonwebtoken": "^8.5.1",
